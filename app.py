@@ -4,43 +4,47 @@ from modules.text_to_video import generate_video
 from modules.doc_chatbot import doc_chatbot
 from modules.company_chatbot import company_chatbot
 
-# Streamlit Layout
-st.title("Multimodal AI App")
-st.sidebar.title("Choose an option")
+# Set the title of the Streamlit app
+st.title("Multimodal App")
 
+# Define sidebar options
+st.sidebar.title("Navigation")
 option = st.sidebar.selectbox(
-    "Select Mode", 
-    ("Text to Image", "Text to Video", "Document Chatbot", "Company Chatbot")
+    "Choose a feature:",
+    ["Text to Image", "Text to Video", "Document Chatbot", "Company Chatbot"]
 )
 
-# Text-to-Image
+# Handle different features based on sidebar selection
 if option == "Text to Image":
     st.header("Generate Image from Text")
-    prompt = st.text_input("Enter a prompt:")
+    prompt = st.text_area("Enter a prompt for the image:")
     if st.button("Generate Image"):
-        img = generate_image(prompt)
-        st.image(img)
+        if prompt:
+            image = generate_image(prompt)  # Function in your text_to_image.py module
+            st.image(image, caption="Generated Image", use_column_width=True)
+        else:
+            st.error("Please enter a prompt to generate the image.")
 
-# Text-to-Video
 elif option == "Text to Video":
     st.header("Generate Video from Text")
-    prompt = st.text_input("Enter a prompt:")
+    prompt = st.text_area("Enter a prompt for the video:")
     if st.button("Generate Video"):
-        video = generate_video(prompt)
-        st.video(video)
+        if prompt:
+            video = generate_video(prompt)  # Function in your text_to_video.py module
+            st.video(video)  # Display the generated video
+        else:
+            st.error("Please enter a prompt to generate the video.")
 
-# Document Chatbot
 elif option == "Document Chatbot":
-    st.header("Chat with Document")
-    uploaded_file = st.file_uploader("Upload a Document", type=["pdf", "png", "jpeg"])
-    if uploaded_file is not None:
-        response = doc_chatbot(uploaded_file)
+    st.header("Chatbot for Documents")
+    document = st.file_uploader("Upload a document", type=["pdf", "txt"])
+    if document:
+        response = doc_chatbot(document)  # Function in your doc_chatbot.py module
         st.write(response)
 
-# Company Chatbot
 elif option == "Company Chatbot":
-    st.header("Chat with Company Bot")
-    user_query = st.text_input("Ask the Company Bot a question:")
-    if st.button("Ask"):
-        response = company_chatbot(user_query)
+    st.header("Company-Specific Chatbot")
+    user_input = st.text_input("Ask a question:")
+    if user_input:
+        response = company_chatbot(user_input)  # Function in your company_chatbot.py module
         st.write(response)
